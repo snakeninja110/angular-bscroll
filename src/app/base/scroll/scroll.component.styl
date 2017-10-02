@@ -1,0 +1,27 @@
+.scroll-wrapper
+  position: absolute
+  left: 0
+  right: 0
+  bottom: 0
+  top: 0
+  overflow: hidden
+  background-color: #fff
+  z-index: 10
+.pulldown-wrapper
+  position absolute
+  width 100%
+  left 0
+  display flex
+  justify-content center
+  align-items center
+  pointer-events none // 设置点击穿透 防止挡住数据层
+  transition all
+  .after-trigger
+    margin-top 10px
+
+.pullup-wrapper
+  width 100%
+  display flex
+  justify-content center
+  align-items center
+  padding 12px 0

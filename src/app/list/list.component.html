@@ -1,0 +1,5 @@
+<app-scroll [probeType]="probeType" [clickable]="clickable" (scrollPos)="hander($event)" (pullingUp)="pullingUp()">
+  <ul name="scroll" class="list-content">
+    <li *ngFor="let item of list" class="list-item">{{item}}</li>
+  </ul>
+</app-scroll>
