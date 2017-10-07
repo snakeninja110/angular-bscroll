@@ -1,25 +1,25 @@
 <div class="scroll-wrapper" #wrapper>
   <div class="scroll-content">
-    <ng-content select="[name=scroll]" #list></ng-content> <!-- 插槽 -->
+    <ng-content select="[name=scroll]"></ng-content> <!-- 插槽 -->
     <div class="pullup-wrapper">
       <div class="before-trigger" *ngIf="!isPullUpLoad">
-        <span>{{pullUpTxt}}</span>
+        <span>{{pullUpDirty ? moreTxt : noMoreTxt}}</span>
       </div>
       <div class="after-trigger" *ngIf="isPullUpLoad">
-        <span>加载中...</span>
+        <app-loading></app-loading>
       </div>
     </div>
   </div>
-  <div class="pulldown-wrapper">
+  <div class="pulldown-wrapper" [ngStyle]="{'top':pullDownStyle}">
     <div class="before-trigger" *ngIf="beforePullDown">
-      <app-bubble></app-bubble>
+      <app-bubble [y]="bubbleY"></app-bubble>
     </div>
     <div class="after-trigger" *ngIf="!beforePullDown">
       <div class="loading" *ngIf="pulling">
-        <span></span>
+        <app-loading></app-loading>
       </div>
       <div *ngIf="!pulling">
-        <span>刷新中...</span>
+        <span>{{refreshTxt}}</span>
       </div>
     </div>
   </div>

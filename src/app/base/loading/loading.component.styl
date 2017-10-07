@@ -1,0 +1,82 @@
+/*!
+ * Load Awesome v1.1.0 (http://github.danielcardoso.net/load-awesome/)
+ * Copyright 2015 Daniel Cardoso <@DanielCardoso>
+ * Licensed under MIT
+ */
+$color-1 = #fff
+$color-2 = #333
+
+.la-ball-newton-cradle
+.la-ball-newton-cradle > div
+  position relative
+  box-sizing border-box
+
+.la-ball-newton-cradle
+  display block
+  font-size 0
+  color $color-1
+  width 40px
+  height 10px
+
+  &.la-dark
+      color $color-2
+
+  >div
+    display inline-block
+    float none
+    background-color currentColor
+    border 0 solid currentColor
+    width 10px
+    height 10px
+    border-radius 100%
+
+    &:first-child
+      transform translateX(0%)
+      animation ball-newton-cradle-left 1s 0s ease-out infinite
+
+    &:last-child
+      transform translateX(0%)
+      animation ball-newton-cradle-right 1s 0s ease-out infinite
+
+  &.la-sm
+    width 20px
+    height 4px
+
+    >div
+      width 4px
+      height 4px
+
+  &.la-2x
+    width 80px
+    height 20px
+
+    >div
+      width 20px
+      height 20px
+
+  &.la-3x
+    width 120px
+    height 30px
+
+    >div
+      width 30px
+      height 30px
+
+@keyframes ball-newton-cradle-left
+  25%
+    transform translateX(-100%)
+    animation-timing-function ease-in
+
+  50%
+    transform translateX(0%)
+
+@keyframes ball-newton-cradle-right
+  50%
+    transform translateX(0%)
+
+  75%
+    transform translateX(100%)
+    animation-timing-function ease-in
+
+  100%
+    transform translateX(0%)

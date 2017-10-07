@@ -1,15 +1,15 @@
-import { Component, ElementRef, EventEmitter, ViewChild, Input, Output, OnInit, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter,
+  ViewChild, Input, OnChanges, Output, OnInit, AfterViewInit, SimpleChanges } from '@angular/core';
 import BScroll from 'better-scroll';
-import { getRect } from '../../../common/js/dom';
 
 @Component({
   selector: 'app-scroll',
   templateUrl: './scroll.component.html',
   styleUrls: ['./scroll.component.styl']
 })
-export class ScrollComponent implements OnInit, AfterViewInit {
+export class ScrollComponent implements OnInit, OnChanges, AfterViewInit {
 
-  @Input() pullUpTxt: String = '加载更多';
+  @Input() data: any;
 
   @Input() probeType: Number = 1;
 
@@ -29,15 +29,32 @@ export class ScrollComponent implements OnInit, AfterViewInit {
 
   @Output() pullingUp: EventEmitter<any> = new EventEmitter;
 
+  @Output() pullingDown: EventEmitter<any> = new EventEmitter;
+
   @ViewChild('wrapper') wrapper: ElementRef; // 获取dom
-  @ViewChild('list') list: ElementRef;
 
   scroll: any;
   isPullUpLoad: Boolean = false;
   beforePullDown: Boolean = true;
   pulling: Boolean = false;
+  isRebounding: Boolean = false;
+  isPullingDown: Boolean = false;
+  pullUpDirty: Boolean = true;
+  pullDownInitTop: any;
+  pullDownStyle: any = '';
+  bubbleY: any = 0;
 
-  constructor() { }
+  _DEFAULT_MORE_TXT: String = '加载更多';
+  _DEFAULT_NO_MORE_TXT: String = '没有更多了';
+  _DEFAULT_REFRESH_TXT: String = '刷新成功';
+
+  moreTxt: String;
+  noMoreTxt: String;
+
+  refreshTxt: String;
+
+  constructor() {
+  }
 
   _initScroll() {
     // 初始化BScroll
@@ -45,17 +62,13 @@ export class ScrollComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    if (this.list && (this.pullDownRefresh || this.pullUpLoad)) {
-      this.list.nativeElement.styles.minHeight = `${getRect(this.wrapper).height}px`;
-    }
-
     const options: Object = {
       probeType: this.probeType,
       click: this.clickable,
       scrollY: true,
       // scrollX: true,
-      // pullDownRefresh: this.pullDownRefresh,
-      // pullUpLoad: this.pullUpLoad,
+      pullDownRefresh: this.pullDownRefresh,
+      pullUpLoad: this.pullUpLoad,
       scrollbar: this.scrollbar
     };
 
@@ -92,66 +105,110 @@ export class ScrollComponent implements OnInit, AfterViewInit {
   }
 
   _initPullDownRefresh() {
+    this.scroll.on('pullingDown', () => {
+      this.beforePullDown = false;
+      this.isPullingDown = true;
+      this.pulling = true;
+      this.pullingDown.emit();
+    });
 
+    this.scroll.on('scroll', (pos) => {
+      if (this.beforePullDown) {
+        this.bubbleY = Math.max(0, pos.y + this.pullDownInitTop);
+        this.pullDownStyle = `${Math.min(pos.y + this.pullDownInitTop, 10)}px`;
+      } else {
+        this.bubbleY = 0;
+      }
+
+      if (this.isRebounding) {
+        this.pullDownStyle = `${10 - (this.pullDownRefresh.stop - pos.y)}px`;
+      }
+    });
+  }
+
+  _reboundPullDown() {
+    const {stopTime = 600} = this.pullDownRefresh;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        this.isRebounding = true;
+        this.scroll.finishPullDown();
+        this.isPullingDown = false;
+        resolve();
+      }, stopTime);
+    });
+  }
+
+  _afterPullDown() {
+    setTimeout(() => {
+      this.pullDownStyle = `${this.pullDownInitTop}px`;
+      this.beforePullDown = true;
+      this.isRebounding = false;
+      this.refresh();
+    }, this.scroll.options.bounceTime);
   }
 
   enable () {
-    if (this.scroll) {
-      this.scroll.enable();
-    }
+    this.scroll && this.scroll.enable();
   }
 
   disable () {
-    if (this.scroll) {
-      this.scroll.disable();
-    }
+    this.scroll && this.scroll.disable();
   }
 
-  refresh () {
-    if (this.scroll) {
-      this.scroll.refresh();
-    }
+  refresh () { // 刷新scroll
+    this.scroll && this.scroll.refresh();
   }
 
-  scrollTo () {
-    if (this.scroll) {
-      this.scroll.scrollTo.apply(this.scroll, arguments);
-    }
+  scrollTo () { // 滚动到坐标
+    this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments);
   }
 
-  scrollToElement () {
-    if (this.scroll) {
-      this.scroll.scrollToElement.apply(this.scroll, arguments);
+  scrollToElement () { // 滚动到元素
+    this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
+  }
+
+  destroy() { // 销毁
+    this.scroll.destroy();
+  }
+
+  forceUpdate(dirty) {
+    if (this.pullDownRefresh && this.isPullingDown) {
+      this.pulling = false;
+      this._reboundPullDown().then(() => {
+        this._afterPullDown();
+      });
+    } else if (this.pullUpLoad && this.isPullUpLoad) {
+      this.isPullUpLoad = false;
+      this.scroll.finishPullUp();
+      this.pullUpDirty = dirty;
+      this.refresh();
+    } else {
+      this.refresh();
     }
   }
 
   ngOnInit() {
-    console.log(this.wrapper.nativeElement);
+    this.pullDownInitTop = -50;
+
+    this.moreTxt = this.pullUpLoad && this.pullUpLoad.txt && this.pullUpLoad.txt.more || this._DEFAULT_MORE_TXT;
+
+    this.noMoreTxt = this.pullUpLoad && this.pullUpLoad.txt && this.pullUpLoad.txt.noMore || this._DEFAULT_NO_MORE_TXT;
+
+    this.refreshTxt = this.pullDownRefresh && this.pullDownRefresh.txt || this._DEFAULT_REFRESH_TXT;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // 只执行了一次
+    const data = changes['data'].currentValue;
+    // console.log(data);
+
   }
 
   ngAfterViewInit() {
     // 初始化完组件视图及其子视图之后调用。
     // BScroll加载必须放在此钩子中否则无法滚动
-    this._initScroll();
-    console.log(this.scroll);
+    setTimeout(() => {
+      this._initScroll();
+    }, 20);
   }
-
-  // getRect(el) {
-  //   if (el instanceof (<any>window).SVGElement) {
-  //     const rect: any = el.getBoundingClientRect();
-  //     return {
-  //       top: rect.top,
-  //       left: rect.left,
-  //       width: rect.width,
-  //       height: rect.height
-  //     };
-  //   } else {
-  //     return {
-  //       top: el.offsetTop,
-  //       left: el.offsetLeft,
-  //       width: el.offsetWidth,
-  //       height: el.offsetHeight
-  //     };
-  //   }
-  // }
 }
