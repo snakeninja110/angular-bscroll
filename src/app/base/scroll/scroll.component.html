@@ -1,5 +1,5 @@
 <div class="scroll-wrapper" #wrapper>
-  <div class="scroll-content">
+  <div class="scroll-content" #listWrapper>
     <ng-content select="[name=scroll]"></ng-content> <!-- 插槽 -->
     <div class="pullup-wrapper">
       <div class="before-trigger" *ngIf="!isPullUpLoad">
@@ -13,6 +13,7 @@
   <div class="pulldown-wrapper" [ngStyle]="{'top':pullDownStyle}">
     <div class="before-trigger" *ngIf="beforePullDown">
       <app-bubble [y]="bubbleY"></app-bubble>
+      <!-- <span>下拉刷新</span> -->
     </div>
     <div class="after-trigger" *ngIf="!beforePullDown">
       <div class="loading" *ngIf="pulling">

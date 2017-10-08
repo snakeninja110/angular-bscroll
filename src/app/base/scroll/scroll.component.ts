@@ -1,13 +1,14 @@
-import { Component, ElementRef, EventEmitter,
+import { Component, DoCheck, ElementRef, EventEmitter,
   ViewChild, Input, OnChanges, Output, OnInit, AfterViewInit, SimpleChanges } from '@angular/core';
 import BScroll from 'better-scroll';
+import { getRect } from '../../../common/js/dom';
 
 @Component({
   selector: 'app-scroll',
   templateUrl: './scroll.component.html',
   styleUrls: ['./scroll.component.styl']
 })
-export class ScrollComponent implements OnInit, OnChanges, AfterViewInit {
+export class ScrollComponent implements OnInit, OnChanges, AfterViewInit, DoCheck {
 
   @Input() data: any;
 
@@ -32,7 +33,9 @@ export class ScrollComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() pullingDown: EventEmitter<any> = new EventEmitter;
 
   @ViewChild('wrapper') wrapper: ElementRef; // 获取dom
+  @ViewChild('listWrapper') listWrapper: ElementRef;
 
+  oldData: any;
   scroll: any;
   isPullUpLoad: Boolean = false;
   beforePullDown: Boolean = true;
@@ -60,6 +63,11 @@ export class ScrollComponent implements OnInit, OnChanges, AfterViewInit {
     // 初始化BScroll
     if (!this.wrapper) {
       return;
+    }
+
+    // 当数据不足一页时默认scroll组件不会滚动，为了让上拉加载和下拉刷新能正常使用给ul加了min-height
+    if (this.listWrapper && (this.pullDownRefresh || this.pullUpLoad)) {
+      this.listWrapper.nativeElement.style.minHeight = `${getRect(this.wrapper.nativeElement).height + 2}px`;
     }
 
     const options: Object = {
@@ -99,6 +107,9 @@ export class ScrollComponent implements OnInit, OnChanges, AfterViewInit {
 
   _initPullUpLoad() {
     this.scroll.on('pullingUp', () => {
+      // if (!this.pullUpDirty) {
+      //   return;
+      // }
       this.isPullUpLoad = true;
       this.pullingUp.emit();
     });
@@ -199,9 +210,8 @@ export class ScrollComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     // 只执行了一次
-    const data = changes['data'].currentValue;
+    const data = changes['data'];
     // console.log(data);
-
   }
 
   ngAfterViewInit() {
@@ -210,5 +220,20 @@ export class ScrollComponent implements OnInit, OnChanges, AfterViewInit {
     setTimeout(() => {
       this._initScroll();
     }, 20);
+  }
+
+  /**
+   * question 2
+   * 如何检测data的更新从而更新scroll
+   */
+  ngDoCheck() {
+    // console.log(this.data);
+    if (this.data !== this.oldData) {
+      // console.log(this.data);
+      setTimeout(() => {
+        this.forceUpdate(true);
+      }, 30);
+      this.oldData = this.data;
+    }
   }
 }

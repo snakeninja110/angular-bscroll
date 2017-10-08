@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { ScrollComponent } from '../base/scroll/scroll.component';
 import { ItemsService } from '../service/items.service';
-import { getRect } from '../../common/js/dom';
 
 @Component({
   selector: 'app-list',
@@ -14,6 +13,7 @@ export class ListComponent implements OnInit, AfterViewInit {
   clickable: Boolean = true;
   pos: any;
   list: Array<any>;
+  noMoreData: Boolean = false;
 
   // infinite Scroll
   pullUpLoad: Boolean = true;
@@ -29,7 +29,6 @@ export class ListComponent implements OnInit, AfterViewInit {
   pullDownRefreshObj: Object;
 
   @ViewChild(ScrollComponent) scroll: ScrollComponent;
-  @ViewChild('listView') listView: ElementRef;
 
   constructor(public items: ItemsService) {
     this.list = this.items.getItems();
@@ -48,10 +47,6 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // 当数据不足一页时默认scroll组件不会滚动，为了让上拉加载和下拉刷新能正常使用给ul加了min-height
-    if (this.list && (this.pullDownRefresh || this.pullUpLoad)) {
-      this.listView.nativeElement.style.minHeight = `${getRect(this.scroll.wrapper.nativeElement).height + 2}px`;
-    }
   }
 
   hander(pos) {
@@ -59,6 +54,9 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   onPullingUp() {
+    // if (this.noMoreData) {
+    //   return;
+    // }
     console.log('pulling up and load data');
     setTimeout(() => {
       if (Math.random() > 0.5) {
@@ -66,6 +64,7 @@ export class ListComponent implements OnInit, AfterViewInit {
         this.list.push(...this.items.getMoreItems());
         this.refresh();
       } else {
+        this.noMoreData = true;
         this.scroll.forceUpdate(false);
       }
     }, 1000);
@@ -73,6 +72,7 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   onPullingDown() {
     console.log('pulling down and Refresh');
+    // 模拟新数据刷新，真实情况应该是刷新整个list
     setTimeout(() => {
       if (Math.random() > 0.5) {
         // 如果有新数据
@@ -88,6 +88,8 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * question 1
+   * 在scroll组件外
    * 获取数据后scroll的刷新应该放在scroll组件内执行
    * */
   refresh() {
