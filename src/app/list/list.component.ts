@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, ElementRef, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { ScrollComponent } from '../base/scroll/scroll.component';
 import { ItemsService } from '../service/items.service';
@@ -30,7 +31,7 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(ScrollComponent) scroll: ScrollComponent;
 
-  constructor(public items: ItemsService) {
+  constructor(private items: ItemsService, private router: Router) {
     this.list = this.items.getItems();
   }
 
@@ -85,6 +86,7 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   clickItem(item, index) {
     console.log(`这是第${index}个：${item}`);
+    // this.router.navigate(['/item'], item);
   }
 
   /**

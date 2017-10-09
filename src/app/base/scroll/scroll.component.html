@@ -13,7 +13,6 @@
   <div class="pulldown-wrapper" [ngStyle]="{'top':pullDownStyle}">
     <div class="before-trigger" *ngIf="beforePullDown">
       <app-bubble [y]="bubbleY"></app-bubble>
-      <!-- <span>下拉刷新</span> -->
     </div>
     <div class="after-trigger" *ngIf="!beforePullDown">
       <div class="loading" *ngIf="pulling">

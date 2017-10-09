@@ -80,8 +80,6 @@ export class ScrollComponent implements OnInit, OnChanges, AfterViewInit, DoChec
       scrollbar: this.scrollbar
     };
 
-    console.log(options);
-
     this.scroll = new BScroll(this.wrapper.nativeElement, options);
 
     if (this.listenScroll) {
@@ -228,12 +226,13 @@ export class ScrollComponent implements OnInit, OnChanges, AfterViewInit, DoChec
    */
   ngDoCheck() {
     // console.log(this.data);
+    // console.log(`${this.data.length}||${(this.oldData || {}).length}`);
     if (this.data !== this.oldData) {
-      // console.log(this.data);
+      console.log(this.data);
       setTimeout(() => {
         this.forceUpdate(true);
+        this.oldData = this.data;
       }, 30);
-      this.oldData = this.data;
     }
   }
 }

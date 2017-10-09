@@ -1,3 +1,4 @@
+import { AppRoutingModule } from './app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -8,6 +9,7 @@ import { BubbleComponent } from './base/bubble/bubble.component';
 import { ListComponent } from './list/list.component';
 import { LoadingComponent } from './base/loading/loading.component';
 import { ItemsService } from './service/items.service';
+import { ItemComponent } from './item/item.component';
 
 @NgModule({
   declarations: [
@@ -15,10 +17,12 @@ import { ItemsService } from './service/items.service';
     ScrollComponent,
     BubbleComponent,
     ListComponent,
-    LoadingComponent
+    LoadingComponent,
+    ItemComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    AppRoutingModule
   ],
   providers: [ItemsService],
   bootstrap: [AppComponent]

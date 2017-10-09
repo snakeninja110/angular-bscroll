@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, OnChanges, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, OnChanges, AfterViewInit, ViewChild, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-bubble',
@@ -142,10 +142,14 @@ export class BubbleComponent implements OnInit, OnChanges, AfterViewInit {
     ctx.restore();
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
     // console.log(this.y);
     this.distance = Math.max(0, Math.min(this.y * this.ratio, this.maxDistance));
     // console.log(this.distance);
+    let y = changes['y'];
+    if (this.y) {
+      this._draw();
+    }
   }
 
   ngAfterViewInit() {
