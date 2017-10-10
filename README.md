@@ -10,7 +10,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 *   ngOnChanges无法监听Object的变化，ngDoCheck在多数情况都会触发而且写的判断有莫名其妙的BUG，ngAfterContentChecked在dom滚动的时候也会触发所以无法用它来监听dom的增加。
 *   最后是用了ContentChild来获取父组件往scroll组件中插入的dom，根据dom的children.length的变化来触发滚动条的刷新
 
-###用依赖注入来模拟真实的数据获取
+### 用依赖注入来模拟真实的数据获取
 具体在items.service.ts里
 
 ***
