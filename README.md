@@ -5,7 +5,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 做了vue项目后想着把better-scroll配合别的框架试试所以就写了这个demo，中间踩坑无数
 
 ### ！Angular里没有watch和computed
-    这是最蛋疼的地方，为了监听data和属性的变化我各种钩子都试了一遍
+   **这是最蛋疼的地方，没法简单的根据某个参数的变化而todoSomthing，为了监听data和属性的变化我把各种钩子都试了一遍**
 
 *   ngOnChanges无法监听Object的变化，ngDoCheck在多数情况都会触发而且写的判断有莫名其妙的BUG，ngAfterContentChecked在dom滚动的时候也会触发所以无法用它来监听dom的增加。
 *   最后是用了ContentChild来获取父组件往scroll组件中插入的dom，根据dom的children.length的变化来触发滚动条的刷新
