@@ -204,8 +204,6 @@ export class ScrollComponent implements OnInit, AfterViewInit, AfterContentCheck
     this.noMoreTxt = this.pullUpLoad && this.pullUpLoad.txt && this.pullUpLoad.txt.noMore || this._DEFAULT_NO_MORE_TXT;
 
     this.refreshTxt = this.pullDownRefresh && this.pullDownRefresh.txt || this._DEFAULT_REFRESH_TXT;
-
-    // this.dataLength = this.data.nativeElement.children.length;
   }
 
   ngAfterViewInit() {
@@ -217,8 +215,6 @@ export class ScrollComponent implements OnInit, AfterViewInit, AfterContentCheck
   }
 
   ngAfterContentChecked() {
-    // console.log(this.list);
-    // console.log(this.data);
     let nowLength = this.data.nativeElement.children.length;
     if (nowLength !== this.dataLength) {
       setTimeout(() => {

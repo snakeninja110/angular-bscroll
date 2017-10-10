@@ -36,7 +36,6 @@ export class BubbleComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('bubble') bubble: ElementRef;
 
   constructor() {
-    // this._draw();
   }
 
   ngOnInit() {
@@ -153,8 +152,7 @@ export class BubbleComponent implements OnInit, OnChanges, AfterViewInit {
   ngOnChanges(changes: SimpleChanges) {
     // console.log(this.y);
     this.distance = Math.max(0, Math.min(this.y * this.ratio, this.maxDistance));
-    // console.log(this.distance);
-    // console.log(changes['y']);
+
     let y = changes['y'];
     if (y.currentValue !== y.previousValue) {
       this._draw();
