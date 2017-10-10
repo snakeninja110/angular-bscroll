@@ -7,7 +7,10 @@ import { Component, ElementRef, Input, OnInit, OnChanges, AfterViewInit, ViewChi
 })
 export class BubbleComponent implements OnInit, OnChanges, AfterViewInit {
 
-  // BUG:在初次加载和刷新完一次之后(y为0)不会绘制图形，只有在y为正数时才会绘制
+  /**
+   * BUG:在初次加载和刷新完一次之后(y为0)不会绘制图形，只有在y为正数时才会绘制
+   * 已解决：ngOnInit的时候给distance一个初始值
+   */
 
   @Input() y: any;
 
@@ -28,11 +31,13 @@ export class BubbleComponent implements OnInit, OnChanges, AfterViewInit {
     x: null,
     y: null
   };
-  distance: any;
+  distance: number;
 
   @ViewChild('bubble') bubble: ElementRef;
 
-  constructor() { }
+  constructor() {
+    // this._draw();
+  }
 
   ngOnInit() {
     this.ratio = window.devicePixelRatio;
@@ -51,6 +56,7 @@ export class BubbleComponent implements OnInit, OnChanges, AfterViewInit {
       x: this.initCenterX,
       y: this.initCenterY
     };
+    this.distance = 0;
 
     this.style = {
       width: `${this.width / this.ratio}px`,
