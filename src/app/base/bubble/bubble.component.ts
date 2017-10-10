@@ -7,7 +7,9 @@ import { Component, ElementRef, Input, OnInit, OnChanges, AfterViewInit, ViewChi
 })
 export class BubbleComponent implements OnInit, OnChanges, AfterViewInit {
 
-  @Input() y: any = 0;
+  // BUG:在初次加载和刷新完一次之后(y为0)不会绘制图形，只有在y为正数时才会绘制
+
+  @Input() y: any;
 
   style: any;
   width = 50;
@@ -146,8 +148,9 @@ export class BubbleComponent implements OnInit, OnChanges, AfterViewInit {
     // console.log(this.y);
     this.distance = Math.max(0, Math.min(this.y * this.ratio, this.maxDistance));
     // console.log(this.distance);
+    // console.log(changes['y']);
     let y = changes['y'];
-    if (this.y) {
+    if (y.currentValue !== y.previousValue) {
       this._draw();
     }
   }

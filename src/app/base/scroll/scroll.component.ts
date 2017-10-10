@@ -1,4 +1,4 @@
-import { Component, DoCheck, ElementRef, EventEmitter,
+import { Component, ContentChild, ElementRef, EventEmitter, AfterContentChecked,
   ViewChild, Input, OnChanges, Output, OnInit, AfterViewInit, SimpleChanges } from '@angular/core';
 import BScroll from 'better-scroll';
 import { getRect } from '../../../common/js/dom';
@@ -8,9 +8,7 @@ import { getRect } from '../../../common/js/dom';
   templateUrl: './scroll.component.html',
   styleUrls: ['./scroll.component.styl']
 })
-export class ScrollComponent implements OnInit, OnChanges, AfterViewInit, DoCheck {
-
-  @Input() data: any;
+export class ScrollComponent implements OnInit, AfterViewInit, AfterContentChecked {
 
   @Input() probeType: Number = 1;
 
@@ -34,8 +32,10 @@ export class ScrollComponent implements OnInit, OnChanges, AfterViewInit, DoChec
 
   @ViewChild('wrapper') wrapper: ElementRef; // 获取dom
   @ViewChild('listWrapper') listWrapper: ElementRef;
+  @ContentChild('data') data; // 获取父组件种传递过来的dom，dom上必须加上#data
 
-  oldData: any;
+  dataLength: any;
+
   scroll: any;
   isPullUpLoad: Boolean = false;
   beforePullDown: Boolean = true;
@@ -204,12 +204,8 @@ export class ScrollComponent implements OnInit, OnChanges, AfterViewInit, DoChec
     this.noMoreTxt = this.pullUpLoad && this.pullUpLoad.txt && this.pullUpLoad.txt.noMore || this._DEFAULT_NO_MORE_TXT;
 
     this.refreshTxt = this.pullDownRefresh && this.pullDownRefresh.txt || this._DEFAULT_REFRESH_TXT;
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // 只执行了一次
-    const data = changes['data'];
-    // console.log(data);
+    // this.dataLength = this.data.nativeElement.children.length;
   }
 
   ngAfterViewInit() {
@@ -220,19 +216,15 @@ export class ScrollComponent implements OnInit, OnChanges, AfterViewInit, DoChec
     }, 20);
   }
 
-  /**
-   * question 2
-   * 如何检测data的更新从而更新scroll
-   */
-  ngDoCheck() {
+  ngAfterContentChecked() {
+    // console.log(this.list);
     // console.log(this.data);
-    // console.log(`${this.data.length}||${(this.oldData || {}).length}`);
-    if (this.data !== this.oldData) {
-      console.log(this.data);
+    let nowLength = this.data.nativeElement.children.length;
+    if (nowLength !== this.dataLength) {
       setTimeout(() => {
         this.forceUpdate(true);
-        this.oldData = this.data;
       }, 30);
+      this.dataLength = nowLength;
     }
   }
 }

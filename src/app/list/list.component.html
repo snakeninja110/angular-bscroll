@@ -5,8 +5,8 @@
             (scrollPos)="hander($event)"
             (pullingUp)="onPullingUp()"
             (pullingDown)="onPullingDown()"
-            [data]="list">
-  <ul name="scroll" class="list-content">
+            >
+  <ul name="scroll" class="list-content" #data>
     <li *ngFor="let item of list; let i = index" class="list-item" (click)="clickItem(item, i)">{{item}}</li>
   </ul>
 </app-scroll>

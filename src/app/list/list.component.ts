@@ -63,7 +63,6 @@ export class ListComponent implements OnInit, AfterViewInit {
       if (Math.random() > 0.5) {
         // 有新数据
         this.list.push(...this.items.getMoreItems());
-        this.refresh();
       } else {
         this.noMoreData = true;
         this.scroll.forceUpdate(false);
@@ -78,7 +77,6 @@ export class ListComponent implements OnInit, AfterViewInit {
       if (Math.random() > 0.5) {
         // 如果有新数据
         this.list.unshift(`new message ${+new Date()}`);
-        this.refresh();
       }
       this.scroll.forceUpdate(false);
     }, 1000);
@@ -87,16 +85,5 @@ export class ListComponent implements OnInit, AfterViewInit {
   clickItem(item, index) {
     console.log(`这是第${index}个：${item}`);
     // this.router.navigate(['/item'], item);
-  }
-
-  /**
-   * question 1
-   * 在scroll组件外
-   * 获取数据后scroll的刷新应该放在scroll组件内执行
-   * */
-  refresh() {
-    setTimeout(() => {
-      this.scroll.forceUpdate(true);
-    }, 20);
   }
 }
