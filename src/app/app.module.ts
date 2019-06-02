@@ -10,6 +10,7 @@ import { ListComponent } from './list/list.component';
 import { LoadingComponent } from './base/loading/loading.component';
 import { ItemsService } from './service/items.service';
 import { ItemComponent } from './item/item.component';
+import { CircleComponent } from './circle/circle.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ItemComponent } from './item/item.component';
     BubbleComponent,
     ListComponent,
     LoadingComponent,
-    ItemComponent
+    ItemComponent,
+    CircleComponent
   ],
   imports: [
     BrowserModule,

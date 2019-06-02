@@ -84,6 +84,7 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   clickItem(item, index) {
     console.log(`这是第${index}个：${item}`);
-    // this.router.navigate(['/item'], item);
+    // this.router.navigate([{outlets: {aux: 'circle'}}]);
+    this.router.navigate(['/item'], {queryParams: {item}});
   }
 }

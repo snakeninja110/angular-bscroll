@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -6,8 +6,12 @@ import { Router } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.styl']
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   title = 'app';
 
   constructor(private router: Router) {}
+
+  ngOnDestroy() {
+    this.router.navigate([{outlet: {aux: null}}]);
+  }
 }

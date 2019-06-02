@@ -1,16 +1,23 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ItemComponent } from './item/item.component';
+import { CircleComponent } from './circle/circle.component';
 
 const routes: Routes = [
   {
     path: '',
-    children: []
+    children: [
+      {
+        path: 'item',
+        component: ItemComponent
+      },
+      {
+        path: 'circle',
+        component: CircleComponent,
+        outlet: 'aux'
+      }
+    ]
   },
-  {
-    path: 'item',
-    component: ItemComponent
-  }
 ];
 
 @NgModule({
